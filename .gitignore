@@ -1,0 +1,4 @@
+.env
+*.env
+Capsule-Date-frontend/.env
+Capsule-Date-backend/.env
