@@ -1,12 +1,13 @@
+from jsonschema import ValidationError
 from sqlalchemy import select
 from src.tokens.schemas import Token, TokenData
-from src.users.schemas import UserInDB, SUser
+from src.users.schemas import UserInDB, RegisterUser
 from src.config import settings
 from pwdlib import PasswordHash
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, SecurityScopes
 from src.users.models import Users
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Security, status
 from src.database import async_session_maker 
 from datetime import datetime, timedelta, timezone
 import jwt
@@ -28,12 +29,12 @@ async def get_user(db: Session, username: str):
    result = await db.execute(query)
    return result.scalars().first()
     
-def get_db():
+async def get_db():
     db = async_session_maker()
     try:
         yield db
     finally:
-        db.close()
+       await db.close()
 
 async def authenticate_user(db: Session, username: str, password: str):
     user = await get_user(db, username)
@@ -53,7 +54,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -67,14 +68,16 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = await get_user(db=Session, username=token_data.username)
+    user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
 
+
 async def get_current_active_user(
-    current_user: Annotated[SUser, Depends(get_current_user)],
+    current_user: Annotated[Users, Depends(get_current_user)],
 ):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
