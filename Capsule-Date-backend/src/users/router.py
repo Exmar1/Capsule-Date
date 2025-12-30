@@ -2,6 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter
 from datetime import timedelta
 from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from src.tokens.schemas import Token
 from src.users.auth import authenticate_user, get_db, create_access_token, get_password_hash, get_current_active_user
@@ -40,35 +41,27 @@ async def register_user(
 
 @router.post("/login")
 async def login_for_access_token(
-    login_data: RegisterUser,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    stmt = select(Users).where(Users.email == login_data.email)
-    result = await db.execute(stmt)
-    users_list = result.scalars().first()
-
-    user = await authenticate_user(db, login_data.username, login_data.password)
+    user = await authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=401,
             detail="Некорректные имя или пароль",
             headers={"WWW-Authenticate": "Bearer"},
-        ) 
-    users_list.is_active = True
-    db.add(users_list)
-    await db.commit()   
-    await db.refresh(users_list)
+        )
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username},    
+        data={"sub": user.username},
         expires_delta=access_token_expires
     )
-    
-    return Token(access_token=access_token, token_type="bearer")      
+
+    return {"access_token": access_token, "token_type": "bearer"}     
 
 
-@router.get("/auth/me/", response_model=ReadUsers)
+@router.get("/me", response_model=ReadUsers)
 async def read_users_me(
     current_user: Annotated[Users, Depends(get_current_active_user)],
 ):

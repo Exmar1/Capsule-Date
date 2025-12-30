@@ -13,7 +13,6 @@ class RegisterUser(BaseModel):
 	password: str
 
 class ReadUsers(BaseModel):
-	username: str
-	email: EmailStr
-	password: str
-	is_active: bool
+    username: str
+    email: EmailStr
+    is_active: bool
