@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './components/Layout/Layout'
+import ProtectedRouter from './context/ProtectedRoute'
 import Archive from './pages/Archives/Archive'
 import Home from './pages/Home/Home'
 import Login from './pages/Login/Login'
@@ -14,21 +15,38 @@ const router = createBrowserRouter([
 		path: '/register',
 		element: <Register />,
 	},
+
 	{
 		path: '/',
-		element: <Layout />,
+		element: (
+			<ProtectedRouter>
+				<Layout />
+			</ProtectedRouter>
+		),
 		children: [
 			{
 				index: true,
-				element: <Home />,
+				element: (
+					<ProtectedRouter>
+						<Home />
+					</ProtectedRouter>
+				),
 			},
 			{
-				path: '/archive',
-				element: <Archive />,
+				path: 'archive',
+				element: (
+					<ProtectedRouter>
+						<Archive />
+					</ProtectedRouter>
+				),
 			},
 			{
 				path: '*',
-				element: <Home />,
+				element: (
+					<ProtectedRouter>
+						<Home />
+					</ProtectedRouter>
+				),
 			},
 		],
 	},

@@ -1,40 +1,55 @@
 import axios from 'axios'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { UserAuth } from '../../context/AuthContext'
 
 function Login() {
 	const [username, setName] = useState('')
-	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-	const [response, setResponse] = useState('')
 	const [error, setError] = useState('')
+	const [email, setEmail] = useState('')
 
+	const { login } = UserAuth()
 	const navigate = useNavigate()
 
 	const handleSubmit = async e => {
 		e.preventDefault()
-
 		setError('')
 
 		try {
-			const payload = {
-				username: username,
-				email: email,
-				password: password,
-			}
+			const formData = new URLSearchParams()
+			formData.append('username', username)
+			formData.append('password', password)
 
-			await axios
-				.post('http://127.0.0.1:8000/auth/login', payload)
-				.then(response => {
-					setResponse(response.data)
-				})
-			console.log('Успех', response.data)
+			const res = await axios.post(
+				'http://127.0.0.1:8000/auth/login',
+				formData,
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				}
+			)
+
+			const token = res.data.access_token
+			localStorage.setItem('access_token', token)
+
+			const userRes = await axios.get('http://127.0.0.1:8000/auth/me', {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+
+			login(token, userRes.data)
+
+			navigate('/')
 		} catch (err) {
 			console.log(err)
-			if (err.response && err.response.data) {
+
+			if (err.response?.data?.detail) {
 				setError(err.response.data.detail)
 			} else {
-				setError('Ошибка Сети. Сервер не отвечает')
+				setError('Ошибка сети. Сервер не отвечает')
 			}
 		}
 	}
@@ -140,8 +155,7 @@ function Login() {
 					</form>
 				</div>
 			</div>
-			{response && navigate('/')}
-			{!response && <p className='text-lg mt-6 text-red-500'>{error}</p>}
+			{error && <p className='text-lg mt-6 text-red-500'>{error}</p>}
 		</div>
 	)
 }
