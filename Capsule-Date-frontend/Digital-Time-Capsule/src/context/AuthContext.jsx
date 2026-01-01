@@ -44,9 +44,27 @@ export const AuthProvider = ({ children }) => {
 		setUser(userData)
 	}
 
+	const logout = () => {
+		localStorage.removeItem('access_token')
+		setUser(null)
+	}
+
+	const getInitial = email => {
+		if (!email) return ''
+
+		const atIndex = email.indexOf('@')
+		if (atIndex === -1) return email.substring(0, 2)
+
+		const username = email.substring(0, atIndex)
+
+		return username.substring(0, 2).toUpperCase()
+	}
+
 	const value = {
 		user,
 		isLoading,
+		getInitial,
+		logout,
 		login,
 		isAuthenticated: !!user,
 	}

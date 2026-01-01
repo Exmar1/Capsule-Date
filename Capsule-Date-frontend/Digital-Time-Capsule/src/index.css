@@ -8,3 +8,8 @@
 body {
 	font-family: 'Space Mono', monospace;
 }
+
+.active {
+	color: black;
+	font-weight: bold;
+}

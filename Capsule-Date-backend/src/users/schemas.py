@@ -16,3 +16,6 @@ class ReadUsers(BaseModel):
     username: str
     email: EmailStr
     is_active: bool
+
+class FirstLetters(BaseModel):
+	first_letters_email: str

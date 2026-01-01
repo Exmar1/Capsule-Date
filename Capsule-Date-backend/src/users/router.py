@@ -8,7 +8,7 @@ from src.tokens.schemas import Token
 from src.users.auth import authenticate_user, get_db, create_access_token, get_password_hash, get_current_active_user
 from sqlalchemy.orm import Session
 from src.config import settings
-from src.users.schemas import RegisterUser, ReadUsers
+from src.users.schemas import RegisterUser, ReadUsers, FirstLetters
 from src.users.dao import UsersDAO
 from src.users.models import Users
 
@@ -66,3 +66,4 @@ async def read_users_me(
     current_user: Annotated[Users, Depends(get_current_active_user)],
 ):
     return current_user
+
