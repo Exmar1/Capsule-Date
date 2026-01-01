@@ -56,7 +56,6 @@ function Login() {
 
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-slate-300 via-purple-200 to-indigo-300 px-4 duration-300 flex items-center justify-center flex-col relative'>
-			{/* Регистер блок */}
 			<div className='absolute bottom-8'>
 				<p className='text-gray-800 font-medium'>
 					Нет аккаунта?{' '}
@@ -74,13 +73,11 @@ function Login() {
 					<p className='text-gray-700 font-semibold text-md mb-4'>
 						Оставь след для своей будущей личности!
 					</p>
-					{/* Линии */}
 					<span className="relative text-gray-700 text-sm before:content-[''] before:absolute before:w-full before:h-px before:bg-white/40 before:left-[-120%] before:top-1/2 after:content-[''] after:absolute after:w-full after:h-px after:bg-white/40 after:right-[-120%] after:top-1/2 mb-6">
 						Войти с помощью email и пароля
 					</span>
 				</div>
 
-				{/* Форма */}
 				<div className='flex items-center justify-center'>
 					<form
 						onSubmit={handleSubmit}
