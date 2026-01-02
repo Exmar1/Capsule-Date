@@ -1,5 +1,6 @@
 .env
 *.env
+*.ini
 Capsule-Date-frontend/.env
 Capsule-Date-backend/.env
 alembic.ini
