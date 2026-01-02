@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import Field
 from sqlalchemy import Column, text, Integer, String, Boolean, TIMESTAMP, func
 from src.database import Base
-from sqlalchemy.orm import  Mapped, mapped_column
+from sqlalchemy.orm import  Mapped, mapped_column,relationship
 
 class Users(Base):
 	__tablename__ = 'users'
@@ -13,3 +13,5 @@ class Users(Base):
 	hashed_password = Column(String, nullable=False)
 	is_active: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
 	created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+	capsules = relationship("Capsules", back_populates="owner") 

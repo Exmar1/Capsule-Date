@@ -19,3 +19,4 @@ class ReadUsers(BaseModel):
 
 class FirstLetters(BaseModel):
 	first_letters_email: str
+

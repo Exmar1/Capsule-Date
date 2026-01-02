@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from src.users.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
+from src.capsule.router import router as capsule_router
 
 app = FastAPI()
 
@@ -20,3 +21,4 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(capsule_router)

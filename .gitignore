@@ -2,3 +2,5 @@
 *.env
 Capsule-Date-frontend/.env
 Capsule-Date-backend/.env
+.ini
+Capsule-Date-backend/.ini
