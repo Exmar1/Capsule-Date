@@ -191,7 +191,11 @@ function Home() {
 					type='submit'
 					className='w-full py-4 rounded-2xl bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-lg shadow-xl transition'
 				>
-					Запечатать капсулу
+					{loading ? (
+						<p>Капсула запечатывается...</p>
+					) : (
+						<p>Запечатать капсулу</p>
+					)}
 				</button>
 			</form>
 		</div>
