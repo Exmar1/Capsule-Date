@@ -22,7 +22,7 @@ Capsule-Date — это веб-приложение для создания и �
 ---
 
 ## Превью проекта
-![Страница архивов](C:\Capsule-Date\Capsule-Date\Capsule-Date-frontend\Digital-Time-Capsule\src\assets\demo.png)
+![Страница архивов](README/assets/demo.png)
 
 ## Технологический стек
 
